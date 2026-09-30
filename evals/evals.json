@@ -1,0 +1,34 @@
+{
+  "skill_name": "webforge",
+  "evals": [
+    {
+      "id": 1,
+      "name": "bakery-greenfield-gate",
+      "fixture": "bakery-empty",
+      "turns": 1,
+      "prompt": "Build a landing page for my bakery, Pan de Sal Co. in Quezon City. Hero, menu with prices, newsletter signup, and a contact form. Use Next.js.",
+      "expected_output": "Plan written with requirement matrix covering all 3 rulebooks, owners, done-when checks, N-A for Supabase/Stripe items with reasons; run stops for user approval with no app code written.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "kwento-nextjs-supabase-harden",
+      "fixture": "kwento-nextjs",
+      "turns": 2,
+      "prompt": "My Next.js + Supabase comments app Kwento is in this folder. Make it production ready before launch.",
+      "turn2": "Approved. Proceed with the build.",
+      "expected_output": "Turn 1 stops at plan approval without touching source. Turn 2: service_role removed from client, RLS + WITH CHECK policies migration, DOMPurify or text rendering for comments, security headers/CSP, no localStorage tokens, Zod validation, SEO basics, one h1, alt text, 44px targets, delete-all confirmation, QC report verifying each ID.",
+      "files": ["fixtures/kwento-nextjs"]
+    },
+    {
+      "id": 3,
+      "name": "lakbay-express-static-harden",
+      "fixture": "lakbay-express",
+      "turns": 2,
+      "prompt": "Here's my travel photo site Lakbay: plain HTML plus a small Express server with a guestbook and contact form. Harden it and make it launch-ready. Keep it plain HTML/Express, don't switch frameworks.",
+      "turn2": "Approved. Proceed with the build.",
+      "expected_output": "Plan adapts Next/Supabase rules to Express (Supabase N-A). Turn 2: guestbook XSS fixed, security headers, rate limiting, server-side validation, body size limit, no stack traces or PII in logs, meta/OG/canonical, robots + sitemap, one h1, alt text, 404 page, tap targets and contrast fixed, still plain HTML/Express, QC report.",
+      "files": ["fixtures/lakbay-express"]
+    }
+  ]
+}

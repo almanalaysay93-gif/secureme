@@ -1,14 +1,14 @@
 ---
-name: webforge
-description: "Production website build, hardening, and launch-readiness crew driven by security, resilience, performance, observability, SEO, UX/accessibility, and content/compliance checklists. Agent 1 plans and orchestrates (user must approve before code changes), agents 2-8 implement disjoint specialist work in parallel, and agent 9 verifies every requirement against the approved plan and fixes gaps. Use for /webforge, production hardening, pre-launch audits, or making a website/app launch-ready."
+name: secureme
+description: "Production website build, hardening, and launch-readiness crew driven by security, resilience, performance, observability, SEO, UX/accessibility, and content/compliance checklists. Agent 1 plans and orchestrates (user must approve before code changes), agents 2-8 implement disjoint specialist work in parallel, and agent 9 verifies every requirement against the approved plan and fixes gaps. Use for /secureme, production hardening, pre-launch audits, or making a website/app launch-ready."
 metadata:
-  slash_command: /webforge
-  triggers: /webforge, webforge, web forge, production-ready hardening, launch checklist, website pre-launch audit
+  slash_command: /secureme
+  triggers: /secureme, secureme, secure website hardening, production-ready hardening, launch checklist, website pre-launch audit
 ---
 
-# WebForge
+# SecureMe
 
-WebForge turns the launch checklist into an approved, parallel build plan and a verified release gate.
+SecureMe turns the launch checklist into an approved, parallel build plan and a verified release gate.
 
 ## Agent roster
 
@@ -28,7 +28,7 @@ WebForge turns the launch checklist into an approved, parallel build plan and a 
 
 ## Non-negotiable operating rules
 
-- Nothing is built until the user explicitly approves `.webforge/PLAN.md`.
+- Nothing is built until the user explicitly approves `.secureme/PLAN.md`.
 - One owner per requirement and one owner per file. Overlaps are represented as `DUP -> <canonical ID>`.
 - QC checks code and runtime evidence, not builder reports.
 - Builders only implement `BUILD` rows assigned to them. `VERIFY`, `MANUAL`, `N-A`, and `DUP` rows are not silently expanded.
@@ -37,17 +37,17 @@ WebForge turns the launch checklist into an approved, parallel build plan and a 
 
 ## Run artifacts
 
-All artifacts live in `<project>/.webforge/`:
+All artifacts live in `<project>/.secureme/`:
 
 ```
-.webforge/
+.secureme/
   PLAN.md
   reports/{security,api,data,observability,seo,ux,content}.md
   handoffs/{security,api,data,observability,seo,ux,content}.md
   QC_REPORT.md
 ```
 
-Add `.webforge/` to `.gitignore` when appropriate. Do not add generated reports to the application bundle.
+Add `.secureme/` to `.gitignore` when appropriate. Do not add generated reports to the application bundle.
 
 ## Phase 0: Intake
 
@@ -61,12 +61,12 @@ Add `.webforge/` to `.gitignore` when appropriate. Do not add generated reports 
 Spawn one general-purpose agent with:
 
 ```
-You are Agent 1, the WebForge Planner-Orchestrator.
+You are Agent 1, the SecureMe Planner-Orchestrator.
 Read: <skill-dir>/agents/planner.md
 Rulebooks: <skill-dir>/references/security.md, <skill-dir>/references/ux-laws.md, <skill-dir>/references/launch-checklist.md
 Project root: <absolute project path>
 User brief: <brief, verbatim>
-Write: <project>/.webforge/PLAN.md
+Write: <project>/.secureme/PLAN.md
 Return: at most 30 lines with counts by owner/action, dependencies, manual actions, risks, and open questions.
 ```
 
@@ -74,21 +74,21 @@ The planner must inspect the actual stack, existing implementation, auth/databas
 
 ## Phase 2: Approval gate
 
-Show the planner summary, link to `.webforge/PLAN.md`, dependencies, manual actions, and open questions. Ask **Approve**, **Revise**, or **Cancel**. Silence or questions are not approval. On revision, send feedback to Agent 1 or respawn it with the existing plan. On approval, set `Status: APPROVED <YYYY-MM-DD>` in the plan. The approved plan is the contract.
+Show the planner summary, link to `.secureme/PLAN.md`, dependencies, manual actions, and open questions. Ask **Approve**, **Revise**, or **Cancel**. Silence or questions are not approval. On revision, send feedback to Agent 1 or respawn it with the existing plan. On approval, set `Status: APPROVED <YYYY-MM-DD>` in the plan. The approved plan is the contract.
 
 ## Phase 3: Build waves (Agents 2-8)
 
 Install only approved dependencies once before builders start. Follow the waves in the plan; for an existing app, default to all seven builders in parallel. For greenfield work, default to SEO/CONTENT or the planned scaffold owner first, then run the remaining builders after the scaffold exists. Each builder receives:
 
 ```
-You are Agent <2-8>, the WebForge <domain> Builder.
+You are Agent <2-8>, the SecureMe <domain> Builder.
 Read: <skill-dir>/agents/builder.md and <skill-dir>/agents/<domain>.md
 Rulebook: <skill-dir>/references/<relevant rulebook>.md
-Approved plan: <project>/.webforge/PLAN.md
+Approved plan: <project>/.secureme/PLAN.md
 Owner code: <SEC|API|DATA|OBS|SEO|UX|CONTENT>
 Project root: <absolute project path>
-Report: <project>/.webforge/reports/<domain>.md
-Handoffs: <project>/.webforge/handoffs/<domain>.md
+Report: <project>/.secureme/reports/<domain>.md
+Handoffs: <project>/.secureme/handoffs/<domain>.md
 Return: DONE/PARTIAL/BLOCKED/SKIPPED counts and blockers in at most 12 lines.
 ```
 
@@ -99,14 +99,14 @@ If a builder needs another owner's file, it writes a precise handoff instead of 
 Spawn QC after each build wave, and always after the final wave:
 
 ```
-You are Agent 9, the WebForge Quality Gate Agent.
+You are Agent 9, the SecureMe Quality Gate Agent.
 Read: <skill-dir>/agents/qc.md
 Rulebooks: <skill-dir>/references/security.md, <skill-dir>/references/ux-laws.md, <skill-dir>/references/launch-checklist.md
-Approved plan: <project>/.webforge/PLAN.md
-Builder reports: <project>/.webforge/reports/
-Handoffs: <project>/.webforge/handoffs/
+Approved plan: <project>/.secureme/PLAN.md
+Builder reports: <project>/.secureme/reports/
+Handoffs: <project>/.secureme/handoffs/
 Project root: <absolute project path>
-Write: <project>/.webforge/QC_REPORT.md
+Write: <project>/.secureme/QC_REPORT.md
 Return: SHIP / SHIP-WITH-MANUAL-ITEMS / NOT-READY, status counts, and every FAIL/FLAG in at most 25 lines.
 ```
 
@@ -114,4 +114,4 @@ QC may fix only gaps inside the approved plan. It gets at most two passes; after
 
 ## Phase 5: Report and memory
 
-Tell the user the verdict, counts for PASS/FIXED/MANUAL/N-A/FAIL/FLAG/UNVERIFIED, and the manual actions copied from QC_REPORT.md. Link to `.webforge/PLAN.md` and `.webforge/QC_REPORT.md`. Append a dated brief, verdict, and open-items entry to `PROJECT_MEMORY.md`.
+Tell the user the verdict, counts for PASS/FIXED/MANUAL/N-A/FAIL/FLAG/UNVERIFIED, and the manual actions copied from QC_REPORT.md. Link to `.secureme/PLAN.md` and `.secureme/QC_REPORT.md`. Append a dated brief, verdict, and open-items entry to `PROJECT_MEMORY.md`.

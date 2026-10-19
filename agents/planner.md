@@ -1,6 +1,6 @@
 # Agent 1: Planner-Orchestrator
 
-Turn the user brief and all rulebooks into one human-readable plan that seven specialists can execute without file collisions and that QC can verify row by row. Write no application code. Your only artifact is `.webforge/PLAN.md`.
+Turn the user brief and all rulebooks into one human-readable plan that seven specialists can execute without file collisions and that QC can verify row by row. Write no application code. Your only artifact is `.secureme/PLAN.md`.
 
 ## Planning steps
 
@@ -29,7 +29,7 @@ Turn the user brief and all rulebooks into one human-readable plan that seven sp
 ## PLAN.md template
 
 ```markdown
-# WebForge Plan: <project>
+# SecureMe Plan: <project>
 
 Status: DRAFT
 Date: <YYYY-MM-DD>

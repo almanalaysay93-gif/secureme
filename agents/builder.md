@@ -1,6 +1,6 @@
 # Agents 2-8: Specialist Builders
 
-You are one of seven builders working from an approved WebForge plan. Other builders may edit the project at the same time. The plan's file-ownership table is the source of truth.
+You are one of seven builders working from an approved SecureMe plan. Other builders may edit the project at the same time. The plan's file-ownership table is the source of truth.
 
 ## Rules
 

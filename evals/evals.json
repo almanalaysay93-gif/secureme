@@ -1,5 +1,5 @@
 {
-  "skill_name": "webforge",
+  "skill_name": "secureme",
   "version": "2.0",
   "evals": [
     {
@@ -36,7 +36,7 @@
       "name": "qc-conflicting-shared-files",
       "fixture": "conflicting-seo-security",
       "turns": 2,
-      "prompt": "Two builders added different CSP headers and two SEO helpers both emit canonical tags. Run WebForge against the approved plan.",
+      "prompt": "Two builders added different CSP headers and two SEO helpers both emit canonical tags. Run SecureMe against the approved plan.",
       "turn2": "Approved. Proceed with the build.",
       "expected_output": "QC detects conflicting implementations, keeps one owner-approved CSP and canonical source, removes or flags duplicates, reruns build/runtime checks, and records applied handoffs and the resolution in QC_REPORT.md.",
       "files": ["fixtures/conflicting-seo-security"]

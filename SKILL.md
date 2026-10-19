@@ -1,129 +1,117 @@
 ---
 name: webforge
-description: "5-agent website build and hardening crew driven by three rulebooks: web and Supabase security, UX laws and HCI frameworks, and the pre-launch checklist. Agent 1 plans and orchestrates (user must approve the plan before anything is built), agents 2-4 build in parallel (security, UX, launch), agent 5 is final QC that verifies every requirement against the approved plan and fixes gaps. Use whenever the user types /webforge, or asks to build, harden, audit-and-fix, or make launch-ready a website or web app against security rules, UX laws, or a pre-launch checklist, e.g. 'make this site production ready', 'apply the security plan and launch checklist', 'build my landing page with the 3 rulebooks', 'run the 5 agents with plan approval and QC'. Prefer /buildme for pure visual-design craft; prefer this skill when compliance with the security, UX-law, and launch checklists is the goal."
+description: "Production website build, hardening, and launch-readiness crew driven by security, resilience, performance, observability, SEO, UX/accessibility, and content/compliance checklists. Agent 1 plans and orchestrates (user must approve before code changes), agents 2-8 implement disjoint specialist work in parallel, and agent 9 verifies every requirement against the approved plan and fixes gaps. Use for /webforge, production hardening, pre-launch audits, or making a website/app launch-ready."
 metadata:
   slash_command: /webforge
-  triggers: /webforge, webforge, web forge, security + ux + launch checklist build, production-ready hardening
+  triggers: /webforge, webforge, web forge, production-ready hardening, launch checklist, website pre-launch audit
 ---
 
 # WebForge
 
-Five agents turn three rulebooks into a verified build:
+WebForge turns the launch checklist into an approved, parallel build plan and a verified release gate.
 
-| # | Agent | Rulebook | Job |
-|---|-------|----------|-----|
-| 1 | Planner-Orchestrator | all 3 | Inspect project, build requirement matrix, assign owners and files, define waves. Writes no code. |
-| 2 | Security Builder | `references/security.md` | Implement security items it owns. |
-| 3 | UX Builder | `references/ux-laws.md` | Implement UX-law items it owns. |
-| 4 | Launch Builder | `references/launch-checklist.md` | Implement launch-checklist items it owns. |
-| 5 | QC Agent | all 3 + approved plan | Verify every ID in real code, apply handoffs, fix gaps, final report. |
+## Agent roster
 
-`<skill-dir>` below = the base directory shown when this skill loaded. Pass absolute paths to subagents; they start cold and know nothing about this conversation.
+| # | Agent | Owner code | Scope |
+|---|---|---|---|
+| 1 | Planner-Orchestrator | PLAN | Inspect the project, build the requirement matrix, assign files, define waves, and write no application code. |
+| 2 | Security Builder | SEC | Secrets, HTTPS, rate limiting, uploads, bot protection, destructive-action confirmations, auth/database security, CSP, and payment idempotency. |
+| 3 | API & Resilience Builder | API | Spending/concurrency controls, timeouts, retries, caching, duplicate-submission protection, and resilient external-service boundaries. |
+| 4 | Data & Performance Builder | DATA | Query shape, indexes, pagination, compression, asset delivery, load/concurrency test setup, and Core Web Vitals implementation support. |
+| 5 | Observability & Recovery Builder | OBS | Error tracking, uptime integration points, error boundaries, empty/error states, backups, restore drills, and operational runbooks. |
+| 6 | Technical SEO Builder | SEO | Sitemap, robots, canonicals, metadata, social cards, schema, headings, image SEO, URL hygiene, broken links, analytics/Search Console handoffs, and favicon package. |
+| 7 | UX & Accessibility Builder | UX | UX laws, responsive behavior, dark mode, navigation, focus/hover states, loading states, skip links, contrast, CTA hierarchy, and mobile interaction quality. |
+| 8 | Content, Forms & Compliance Builder | CONTENT | Search, FAQ, newsletters, validation, password visibility, contact access, 404, legal-page scaffolding, cookie consent, print styles, UTM, clipboard, and update timestamps. |
+| 9 | Quality Gate Agent | QC | Apply handoffs, run project checks, verify every matrix row against real code, fix in-scope gaps, detect conflicts/scope creep, and issue the release verdict. |
 
-## Why the flow looks like this
+`<skill-dir>` is the directory containing this file. Pass absolute paths to subagents; they start cold.
 
-- **Subagents cannot talk to the user.** Their output only reaches you. So the approval gate lives in the main thread: agent 1 drafts, you present, the user decides. You then dispatch agents 2-5 exactly as the approved plan says. You are agent 1's hands for dispatch, not a second planner.
-- **One owner per requirement, one owner per file.** The three rulebooks overlap (rate limiting, secrets, upload limits, UX laws appear in two docs each). Without a single owner, two builders implement the same thing twice or overwrite each other's edits when running in parallel.
-- **QC checks code, not reports.** Builder reports say what they intended. QC re-verifies each requirement with its "done-when" check against the actual files.
+## Non-negotiable operating rules
 
-## Workspace
+- Nothing is built until the user explicitly approves `.webforge/PLAN.md`.
+- One owner per requirement and one owner per file. Overlaps are represented as `DUP -> <canonical ID>`.
+- QC checks code and runtime evidence, not builder reports.
+- Builders only implement `BUILD` rows assigned to them. `VERIFY`, `MANUAL`, `N-A`, and `DUP` rows are not silently expanded.
+- Dashboard-only work—billing caps, uptime alerts, Search Console verification, analytics accounts, backup settings, credential rotation, and outreach—is `MANUAL`.
+- Never print, copy, rotate, commit, push, deploy, or move real secrets. No history rewriting.
 
-All run artifacts go in `<project>/.webforge/`:
+## Run artifacts
+
+All artifacts live in `<project>/.webforge/`:
 
 ```
 .webforge/
-  PLAN.md              agent 1 output, status DRAFT -> APPROVED
-  reports/security.md  agent 2 report
-  reports/ux.md        agent 3 report
-  reports/launch.md    agent 4 report
-  handoffs/<domain>.md edits a builder needed in a file it does not own
-  QC_REPORT.md         agent 5 final verdict
+  PLAN.md
+  reports/{security,api,data,observability,seo,ux,content}.md
+  handoffs/{security,api,data,observability,seo,ux,content}.md
+  QC_REPORT.md
 ```
 
-Add `.webforge/` to `.gitignore` if the project is a git repo and it is not listed.
+Add `.webforge/` to `.gitignore` when appropriate. Do not add generated reports to the application bundle.
 
 ## Phase 0: Intake
 
-1. Target = current working directory unless the user names another path.
-2. Need a brief: what is being built or hardened. If the user's message has none and the target has no app code, ask one question: what should the site be and do. If an app exists and no brief is given, default brief = "harden and make launch-ready as-is".
-3. If `.webforge/PLAN.md` already exists with status APPROVED, ask whether to resume (skip to the first unfinished phase) or re-plan.
+1. Target the current working directory unless the user names another path.
+2. Use the user's brief verbatim. If an app exists without a brief, use: `harden and make launch-ready as-is`. If there is no app and no brief, ask what the site should do.
+3. If an approved plan already exists, ask whether to resume or re-plan.
+4. Treat the supplied `references/launch-checklist.md` as the canonical checklist for the run.
 
 ## Phase 1: Plan (Agent 1)
 
-Spawn one `general-purpose` agent:
+Spawn one general-purpose agent with:
 
 ```
 You are Agent 1, the WebForge Planner-Orchestrator.
-Read and follow: <skill-dir>/agents/planner.md
+Read: <skill-dir>/agents/planner.md
 Rulebooks: <skill-dir>/references/security.md, <skill-dir>/references/ux-laws.md, <skill-dir>/references/launch-checklist.md
-Project root: <abs project path>
+Project root: <absolute project path>
 User brief: <brief, verbatim>
-Write the plan to: <project>/.webforge/PLAN.md
-Return: a summary of at most 25 lines (counts per owner and action, dependencies to add, manual user actions, open questions).
+Write: <project>/.webforge/PLAN.md
+Return: at most 30 lines with counts by owner/action, dependencies, manual actions, risks, and open questions.
 ```
 
-Keep the agent's id so revisions can go back to it with context intact.
+The planner must inspect the actual stack, existing implementation, auth/database/payments/uploads, package manager, routes, and deployment assumptions. It must use atomic IDs, objective done-when checks, and explicit ownership.
 
-## Phase 2: Approval gate (hard stop)
+## Phase 2: Approval gate
 
-Nothing gets built until the user explicitly approves. This is the user's explicit requirement for the skill, so do not treat silence, "looks interesting", or a question as approval.
+Show the planner summary, link to `.webforge/PLAN.md`, dependencies, manual actions, and open questions. Ask **Approve**, **Revise**, or **Cancel**. Silence or questions are not approval. On revision, send feedback to Agent 1 or respawn it with the existing plan. On approval, set `Status: APPROVED <YYYY-MM-DD>` in the plan. The approved plan is the contract.
 
-1. Show the user the planner's summary plus a link to `.webforge/PLAN.md`. Surface open questions and the dependency list (new packages are supply-chain decisions, the user signs off on each).
-2. Ask with AskUserQuestion: **Approve** / **Revise** (user says what) / **Cancel**.
-3. Revise: send the feedback to agent 1 with SendMessage (fall back to a fresh planner spawn with the feedback plus the existing PLAN.md if the agent is gone). Return to step 1. Loop as many times as needed.
-4. Approve: set `Status: APPROVED <YYYY-MM-DD>` in PLAN.md. From here the plan is the contract; builders and QC treat it as the scope.
+## Phase 3: Build waves (Agents 2-8)
 
-## Phase 3: Build (Agents 2-4)
-
-1. Install the approved dependency list once, before spawning builders (parallel agents editing `package.json` race each other). Use the project's package manager (lockfile tells you which).
-2. Run the waves in PLAN.md. Default for an existing app: one wave, all three builders spawned in the same message so they run in parallel. Greenfield: wave 1 = Launch Builder alone (scaffolds the app), wave 2 = Security + UX in parallel.
-3. Each builder is a `general-purpose` agent:
+Install only approved dependencies once before builders start. Follow the waves in the plan; for an existing app, default to all seven builders in parallel. For greenfield work, default to SEO/CONTENT or the planned scaffold owner first, then run the remaining builders after the scaffold exists. Each builder receives:
 
 ```
-You are Agent <2|3|4>, the WebForge <Security|UX|Launch> Builder.
-Read and follow: <skill-dir>/agents/builder.md (your domain section: <SECURITY|UX|LAUNCH>)
-Your rulebook: <skill-dir>/references/<security|ux-laws|launch-checklist>.md
+You are Agent <2-8>, the WebForge <domain> Builder.
+Read: <skill-dir>/agents/builder.md and <skill-dir>/agents/<domain>.md
+Rulebook: <skill-dir>/references/<relevant rulebook>.md
 Approved plan: <project>/.webforge/PLAN.md
-Your owner code in the plan: <SEC|UX|LCH>
-Project root: <abs project path>
-Report to: <project>/.webforge/reports/<security|ux|launch>.md
-Handoffs to: <project>/.webforge/handoffs/<security|ux|launch>.md
-Return: counts of DONE / PARTIAL / BLOCKED / SKIPPED(N-A) and any blocker in at most 10 lines.
+Owner code: <SEC|API|DATA|OBS|SEO|UX|CONTENT>
+Project root: <absolute project path>
+Report: <project>/.webforge/reports/<domain>.md
+Handoffs: <project>/.webforge/handoffs/<domain>.md
+Return: DONE/PARTIAL/BLOCKED/SKIPPED counts and blockers in at most 12 lines.
 ```
 
-4. If a builder returns BLOCKED items that need a user decision, collect them and ask the user after all builders in the wave finish, not mid-wave.
+If a builder needs another owner's file, it writes a precise handoff instead of editing it. Ask the user about decision-blocking items only after the current wave completes.
 
-## Phase 4: QC (Agent 5)
+## Phase 4: Quality gate (Agent 9)
 
-Spawn after every build wave finishes:
+Spawn QC after each build wave, and always after the final wave:
 
 ```
-You are Agent 5, the WebForge QC Agent and final quality gate.
-Read and follow: <skill-dir>/agents/qc.md
+You are Agent 9, the WebForge Quality Gate Agent.
+Read: <skill-dir>/agents/qc.md
 Rulebooks: <skill-dir>/references/security.md, <skill-dir>/references/ux-laws.md, <skill-dir>/references/launch-checklist.md
 Approved plan: <project>/.webforge/PLAN.md
 Builder reports: <project>/.webforge/reports/
 Handoffs: <project>/.webforge/handoffs/
-Project root: <abs project path>
+Project root: <absolute project path>
 Write: <project>/.webforge/QC_REPORT.md
-Return: verdict (SHIP / SHIP-WITH-MANUAL-ITEMS / NOT-READY), counts per status, and every FAIL or FLAG in at most 20 lines.
+Return: SHIP / SHIP-WITH-MANUAL-ITEMS / NOT-READY, status counts, and every FAIL/FLAG in at most 25 lines.
 ```
 
-If QC returns NOT-READY with fixable items it could not finish (ran out of room, needed a decision), resolve the decision with the user, then send QC back via SendMessage for one more pass. Two QC passes max; after that, report what remains.
+QC may fix only gaps inside the approved plan. It gets at most two passes; after that report unresolved items honestly.
 
-## Phase 5: Report
+## Phase 5: Report and memory
 
-Tell the user, briefly:
-- Verdict and counts (PASS / FIXED-BY-QC / MANUAL / N-A / FAIL).
-- Manual actions they must do themselves (dashboards, credential rotation, Search Console, uptime monitor, spending caps), copied from QC_REPORT.md.
-- Links to `.webforge/QC_REPORT.md` and `.webforge/PLAN.md`.
-
-Then append a short dated entry (date, brief, verdict, open items) to `PROJECT_MEMORY.md` at the project root, creating it if missing, so other agents see the run.
-
-## Guardrails for every agent
-
-These come from the rulebooks and from the fact that agents act on the user's real project:
-- Never print, commit, or move real secrets. Leaked credentials go in the report as "rotate in dashboard", never rotated or pasted by an agent.
-- No git history rewriting (`git-filter-repo`, force push), no commits, no pushes, no deploys unless the user asks. Scanning history with `gitleaks` is fine.
-- Dashboard-only settings (Supabase Auth redirect URLs, leaked-password protection, billing caps) are MANUAL items for the user, not something to automate through a browser.
-- Stay inside the approved plan. A needed change outside it becomes a FLAG for the user, not a silent expansion.
+Tell the user the verdict, counts for PASS/FIXED/MANUAL/N-A/FAIL/FLAG/UNVERIFIED, and the manual actions copied from QC_REPORT.md. Link to `.webforge/PLAN.md` and `.webforge/QC_REPORT.md`. Append a dated brief, verdict, and open-items entry to `PROJECT_MEMORY.md`.

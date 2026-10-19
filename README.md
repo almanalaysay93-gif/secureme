@@ -1,10 +1,8 @@
-# webforge
+# WebForge
 
-Claude Code skill: a 5-agent website build and hardening crew driven by three rulebooks (web and Supabase security, UX laws and HCI frameworks, pre-launch checklist).
+WebForge is a Claude Code skill for turning a website or web app into a production-ready, launch-checked build. It combines security, API resilience, data/performance, observability/recovery, technical SEO, UX/accessibility, and content/forms/compliance work.
 
-1. **Planner-Orchestrator** builds a requirement matrix and file-ownership plan. Nothing is built until you approve it.
-2. **Security Builder**, 3. **UX Builder**, 4. **Launch Builder** run in parallel, one rulebook each.
-5. **QC Agent** verifies every requirement in the real code against the approved plan, fixes gaps, and issues a SHIP / NOT-READY verdict.
+The workflow has nine roles. A Planner-Orchestrator first inspects the project and writes an atomic requirement matrix; nothing is built until the user approves it. Seven specialist builders then work in owned file areas: Security, API & Resilience, Data & Performance, Observability & Recovery, Technical SEO, UX & Accessibility, and Content/Forms/Compliance. A Quality Gate Agent applies handoffs, runs project and runtime checks, verifies every requirement against the actual code, fixes in-scope gaps, and issues a SHIP, SHIP-WITH-MANUAL-ITEMS, or NOT-READY verdict.
 
 ## Install
 
@@ -14,8 +12,8 @@ git clone https://github.com/almanalaysay93-gif/webforge ~/.claude/skills/webfor
 
 ## Use
 
-```
+```text
 /webforge make this Next.js + Supabase app production ready
 ```
 
-Run artifacts land in `<project>/.webforge/` (PLAN.md, builder reports, QC_REPORT.md).
+The canonical launch checklist is `references/launch-checklist.md`. Run artifacts are written to the target project's `.webforge/` directory: `PLAN.md`, specialist reports and handoffs, and `QC_REPORT.md`. No agent commits, pushes, deploys, or writes real secrets.

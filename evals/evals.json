@@ -1,5 +1,6 @@
 {
   "skill_name": "webforge",
+  "version": "2.0",
   "evals": [
     {
       "id": 1,
@@ -7,7 +8,7 @@
       "fixture": "bakery-empty",
       "turns": 1,
       "prompt": "Build a landing page for my bakery, Pan de Sal Co. in Quezon City. Hero, menu with prices, newsletter signup, and a contact form. Use Next.js.",
-      "expected_output": "Plan written with requirement matrix covering all 3 rulebooks, owners, done-when checks, N-A for Supabase/Stripe items with reasons; run stops for user approval with no app code written.",
+      "expected_output": "Plan has status DRAFT, covers applicable SEC/API/DATA/OBS/SEO/UX/CONTENT rows with unique owners and runnable done-when checks, lists dependencies/manual actions/N-A reasons, and stops for approval without touching source.",
       "files": []
     },
     {
@@ -17,7 +18,7 @@
       "turns": 2,
       "prompt": "My Next.js + Supabase comments app Kwento is in this folder. Make it production ready before launch.",
       "turn2": "Approved. Proceed with the build.",
-      "expected_output": "Turn 1 stops at plan approval without touching source. Turn 2: service_role removed from client, RLS + WITH CHECK policies migration, DOMPurify or text rendering for comments, security headers/CSP, no localStorage tokens, Zod validation, SEO basics, one h1, alt text, 44px targets, delete-all confirmation, QC report verifying each ID.",
+      "expected_output": "Turn 1 stops at plan approval. Turn 2 routes service_role/client exposure, RLS and XSS to SEC; query/index/pagination to DATA; API limits and validation boundaries to API; error states/recovery to OBS; metadata/crawlability to SEO; targets/contrast/keyboard flows to UX; forms/compliance to CONTENT. QC verifies each ID against code and reports manual provider/database actions.",
       "files": ["fixtures/kwento-nextjs"]
     },
     {
@@ -27,8 +28,28 @@
       "turns": 2,
       "prompt": "Here's my travel photo site Lakbay: plain HTML plus a small Express server with a guestbook and contact form. Harden it and make it launch-ready. Keep it plain HTML/Express, don't switch frameworks.",
       "turn2": "Approved. Proceed with the build.",
-      "expected_output": "Plan adapts Next/Supabase rules to Express (Supabase N-A). Turn 2: guestbook XSS fixed, security headers, rate limiting, server-side validation, body size limit, no stack traces or PII in logs, meta/OG/canonical, robots + sitemap, one h1, alt text, 404 page, tap targets and contrast fixed, still plain HTML/Express, QC report.",
+      "expected_output": "Plan preserves plain HTML/Express, marks Supabase/payment-only rows N-A with reasons, assigns guestbook XSS/security headers to SEC, timeout/rate-limit/validation to API, SEO to SEO, accessibility/mobile to UX, form/compliance to CONTENT, and gives QC objective evidence checks.",
       "files": ["fixtures/lakbay-express"]
+    },
+    {
+      "id": 4,
+      "name": "qc-conflicting-shared-files",
+      "fixture": "conflicting-seo-security",
+      "turns": 2,
+      "prompt": "Two builders added different CSP headers and two SEO helpers both emit canonical tags. Run WebForge against the approved plan.",
+      "turn2": "Approved. Proceed with the build.",
+      "expected_output": "QC detects conflicting implementations, keeps one owner-approved CSP and canonical source, removes or flags duplicates, reruns build/runtime checks, and records applied handoffs and the resolution in QC_REPORT.md.",
+      "files": ["fixtures/conflicting-seo-security"]
+    },
+    {
+      "id": 5,
+      "name": "manual-operational-controls",
+      "fixture": "api-heavy-managed-app",
+      "turns": 2,
+      "prompt": "Make this API-heavy app launch ready. It uses a paid AI provider, Sentry, a managed database, and a payment provider.",
+      "turn2": "Approved. Proceed with the build.",
+      "expected_output": "Plan and QC separate code from MANUAL billing caps, provider limits, uptime alerts, Search Console/analytics, backup restore drills, credential rotation, and payment dashboard settings; no dashboard work is falsely marked PASS.",
+      "files": ["fixtures/api-heavy-managed-app"]
     }
   ]
 }

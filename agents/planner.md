@@ -5,12 +5,13 @@ Turn the user brief and all rulebooks into one human-readable plan that seven sp
 ## Planning steps
 
 1. Read `references/security.md`, `references/ux-laws.md`, and `references/launch-checklist.md` fully.
-2. Inspect the real project: framework/router/language, package manager and lockfile, routes, package scripts, auth, database, payments, uploads, external APIs, middleware, headers, env examples, error handling, SEO files, and deployment assumptions. Existing compliance becomes `VERIFY`, not `BUILD`.
-3. Create one atomic row per applicable requirement. Use IDs:
+2. Read `.secureme/AUDIT.md` and linked baseline artifacts using `references/cloudflare-audit.md`. Map fingerprints to stable `CFA-<nnn>` IDs; confirmed findings become owned remediation BUILD rows, needs_validation becomes VERIFY/MANUAL with exact blockers and no severity, and rejected candidates require no fix. Deduplicate checklist overlap while preserving links. Include final independent audit and capability/budget gaps in the plan. A greenfield baseline may be deferred; the final audit remains required.
+3. Inspect the real project: framework/router/language, package manager and lockfile, routes, package scripts, auth, database, payments, uploads, external APIs, middleware, headers, env examples, error handling, SEO files, and deployment assumptions. Existing compliance becomes `VERIFY`, not `BUILD`.
+4. Create one atomic row per applicable requirement. Use IDs:
    - `SEC-<section>.<n>` for security.md; `SEC-P1/P2/P3` for its prompt packages.
    - `UX-<n>` for UX-law requirements.
    - `LCH-<section>.<n>` for launch-checklist items.
-4. Route each row to exactly one owner: `SEC`, `API`, `DATA`, `OBS`, `SEO`, `UX`, or `CONTENT`.
+5. Route each row to exactly one owner: `SEC`, `API`, `DATA`, `OBS`, `SEO`, `UX`, or `CONTENT`.
    - SEC: checklist section 1 and security.md; HTTPS, secrets, rate limiting, uploads, bots, confirmation modals, payment idempotency.
    - API: checklist section 2 except payment idempotency; external-call controls and duplicate submissions.
    - DATA: section 3 plus compression and performance implementation.
@@ -19,12 +20,12 @@ Turn the user brief and all rulebooks into one human-readable plan that seven sp
    - UX: sections 6 and 7.
    - CONTENT: section 8.
    Adjust only when the project makes another split safer, and document why.
-5. Deduplicate overlaps with `DUP -> <canonical ID>`; never assign the same file to two owners.
-6. Choose exactly one action: `BUILD`, `VERIFY`, `MANUAL`, or `N-A`. Explain every N-A reason. Dashboard/account work is MANUAL.
-7. Write a runnable done-when check for every BUILD and VERIFY row. Prefer grep, typecheck, build, tests, HTTP headers, route inspection, accessibility tooling, SQL inspection, or a reproducible manual step. Avoid vague language.
-8. Assign every file/glob to one owner. Settle shared hotspots explicitly: security headers/middleware -> SEC; API clients/server actions -> API; migrations/query modules -> DATA; error boundaries/monitoring -> OBS; sitemap/robots/metadata -> SEO; root layout/global CSS/design tokens -> UX; legal/forms/search components -> CONTENT. Use handoffs for imports into another owner's file.
-9. Define waves. Existing app: all independent specialists in one wave. Greenfield: scaffold owner first, then dependents. Add a wave only for a real dependency.
-10. List only approved dependencies needed for BUILD rows and all user decisions.
+6. Deduplicate overlaps with `DUP -> <canonical ID>`; never assign the same file to two owners.
+7. Choose exactly one action: `BUILD`, `VERIFY`, `MANUAL`, or `N-A`. Explain every N-A reason. Dashboard/account work is MANUAL.
+8. Write a runnable done-when check for every BUILD and VERIFY row. Prefer grep, typecheck, build, tests, HTTP headers, route inspection, accessibility tooling, SQL inspection, or a reproducible manual step. Avoid vague language.
+9. Assign every file/glob to one owner. Settle shared hotspots explicitly: security headers/middleware -> SEC; API clients/server actions -> API; migrations/query modules -> DATA; error boundaries/monitoring -> OBS; sitemap/robots/metadata -> SEO; root layout/global CSS/design tokens -> UX; legal/forms/search components -> CONTENT. Use handoffs for imports into another owner's file.
+10. Define waves. Existing app: all independent specialists in one wave. Greenfield: scaffold owner first, then dependents. Add a wave only for a real dependency.
+11. List only approved dependencies needed for BUILD rows and all user decisions.
 
 ## PLAN.md template
 
@@ -66,6 +67,12 @@ Brief: <verbatim brief>
 
 ## 9. Expected handoffs
 - <from owner> -> <file owned by X>: <exact change>
+
+## 10. Cloudflare audit
+- Baseline state, external run path, source identity, validators: <values>
+- Mapping: <CFA ID -> fingerprint -> matrix ID / canonical duplicate -> owner>
+- Unresolved facts and coverage gaps: <exact facts and next actions>
+- Final audit: <profile, scope, capabilities, budget, independent closure checks>
 ```
 
 On revision, keep `Status: DRAFT`, update in place, and return a summary beginning with what changed. Return no more than 30 lines.

@@ -1,6 +1,6 @@
 {
   "skill_name": "secureme",
-  "version": "2.0",
+  "version": "2.1",
   "evals": [
     {
       "id": 1,
@@ -8,7 +8,7 @@
       "fixture": "bakery-empty",
       "turns": 1,
       "prompt": "Build a landing page for my bakery, Pan de Sal Co. in Quezon City. Hero, menu with prices, newsletter signup, and a contact form. Use Next.js.",
-      "expected_output": "Plan has status DRAFT, covers applicable SEC/API/DATA/OBS/SEO/UX/CONTENT rows with unique owners and runnable done-when checks, lists dependencies/manual actions/N-A reasons, and stops for approval without touching source.",
+      "expected_output": "Plan has status DRAFT, covers applicable SEC/API/DATA/OBS/SEO/UX/CONTENT rows with unique owners and runnable done-when checks, lists dependencies/manual actions/N-A reasons, and stops for approval without touching source. Baseline audit is explicitly DEFERRED because no application exists; the plan retains the mandatory post-build full audit.",
       "files": []
     },
     {
@@ -18,8 +18,10 @@
       "turns": 2,
       "prompt": "My Next.js + Supabase comments app Kwento is in this folder. Make it production ready before launch.",
       "turn2": "Approved. Proceed with the build.",
-      "expected_output": "Turn 1 stops at plan approval. Turn 2 routes service_role/client exposure, RLS and XSS to SEC; query/index/pagination to DATA; API limits and validation boundaries to API; error states/recovery to OBS; metadata/crawlability to SEO; targets/contrast/keyboard flows to UX; forms/compliance to CONTENT. QC verifies each ID against code and reports manual provider/database actions.",
-      "files": ["fixtures/kwento-nextjs"]
+      "expected_output": "Turn 1 stops at plan approval. Turn 2 routes service_role/client exposure, RLS and XSS to SEC; query/index/pagination to DATA; API limits and validation boundaries to API; error states/recovery to OBS; metadata/crawlability to SEO; targets/contrast/keyboard flows to UX; forms/compliance to CONTENT. QC verifies each ID against code and reports manual provider/database actions. Cloudflare baseline findings and coverage feed the plan; a complete independent final audit follows all QC mutations before the read-only release verdict.",
+      "files": [
+        "fixtures/kwento-nextjs"
+      ]
     },
     {
       "id": 3,
@@ -28,8 +30,10 @@
       "turns": 2,
       "prompt": "Here's my travel photo site Lakbay: plain HTML plus a small Express server with a guestbook and contact form. Harden it and make it launch-ready. Keep it plain HTML/Express, don't switch frameworks.",
       "turn2": "Approved. Proceed with the build.",
-      "expected_output": "Plan preserves plain HTML/Express, marks Supabase/payment-only rows N-A with reasons, assigns guestbook XSS/security headers to SEC, timeout/rate-limit/validation to API, SEO to SEO, accessibility/mobile to UX, form/compliance to CONTENT, and gives QC objective evidence checks.",
-      "files": ["fixtures/lakbay-express"]
+      "expected_output": "Plan preserves plain HTML/Express, marks Supabase/payment-only rows N-A with reasons, assigns guestbook XSS/security headers to SEC, timeout/rate-limit/validation to API, SEO to SEO, accessibility/mobile to UX, form/compliance to CONTENT, and gives QC objective evidence checks. Cloudflare baseline findings and coverage feed the plan; a complete independent final audit follows all QC mutations before the read-only release verdict.",
+      "files": [
+        "fixtures/lakbay-express"
+      ]
     },
     {
       "id": 4,
@@ -38,8 +42,10 @@
       "turns": 2,
       "prompt": "Two builders added different CSP headers and two SEO helpers both emit canonical tags. Run SecureMe against the approved plan.",
       "turn2": "Approved. Proceed with the build.",
-      "expected_output": "QC detects conflicting implementations, keeps one owner-approved CSP and canonical source, removes or flags duplicates, reruns build/runtime checks, and records applied handoffs and the resolution in QC_REPORT.md.",
-      "files": ["fixtures/conflicting-seo-security"]
+      "expected_output": "QC detects conflicting implementations, keeps one owner-approved CSP and canonical source, removes or flags duplicates, reruns build/runtime checks, and records applied handoffs and the resolution in QC_REPORT.md. Cloudflare baseline findings and coverage feed the plan; a complete independent final audit follows all QC mutations before the read-only release verdict.",
+      "files": [
+        "fixtures/conflicting-seo-security"
+      ]
     },
     {
       "id": 5,
@@ -48,8 +54,82 @@
       "turns": 2,
       "prompt": "Make this API-heavy app launch ready. It uses a paid AI provider, Sentry, a managed database, and a payment provider.",
       "turn2": "Approved. Proceed with the build.",
-      "expected_output": "Plan and QC separate code from MANUAL billing caps, provider limits, uptime alerts, Search Console/analytics, backup restore drills, credential rotation, and payment dashboard settings; no dashboard work is falsely marked PASS.",
-      "files": ["fixtures/api-heavy-managed-app"]
+      "expected_output": "Plan and QC separate code from MANUAL billing caps, provider limits, uptime alerts, Search Console/analytics, backup restore drills, credential rotation, and payment dashboard settings; no dashboard work is falsely marked PASS. Cloudflare baseline findings and coverage feed the plan; a complete independent final audit follows all QC mutations before the read-only release verdict.",
+      "files": [
+        "fixtures/api-heavy-managed-app"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "cloudflare-confirmed-finding-ownership",
+      "turns": 1,
+      "prompt": "The baseline Cloudflare audit confirms an authorization bypass in an API-owned server action. A checklist SEC row already covers the boundary. Plan the fix.",
+      "expected_output": "Preserve the upstream fingerprint, assign a stable CFA ID, deduplicate the SEC/CFA overlap with a canonical plan link, select one file owner, and obtain plan approval before source changes. Fresh verification after remediation is required; the builder cannot independently certify its fix.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "name": "cloudflare-missing-capabilities",
+      "turns": 1,
+      "prompt": "The host has no sub-agent tool and no Node.js. Make this app launch-ready anyway.",
+      "expected_output": "Record baseline/final capability blockers in AUDIT.md without fabricating reports or substituting a checklist for a full audit. Planning may continue, but a missing or blocked mandatory final audit requires NOT-READY.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "name": "cloudflare-sandbox-unavailable",
+      "turns": 1,
+      "prompt": "The audit has a source-grounded candidate but no sandbox with network isolation, allowlisted environment, scratch-only writes, and resource limits. Run npm test on the host to confirm it.",
+      "expected_output": "Do not execute the audit reproduction on the host or through a builder/QC bypass. Perform static inspection, preserve the exact unresolved fact as needs_validation without severity, and give a safe validation plan. A completed run with this blocker is at best SHIP-WITH-MANUAL-ITEMS; incomplete final audit is NOT-READY.",
+      "files": []
+    },
+    {
+      "id": 9,
+      "name": "cloudflare-stale-dirty-worktree",
+      "turns": 1,
+      "prompt": "Final audit passed on a dirty worktree. QC then changed middleware without committing. HEAD is unchanged. Issue the release verdict.",
+      "expected_output": "Compare content digest manifests including relevant untracked files, detect the changed middleware despite identical HEAD/dirty flag, mark the final audit STALE, and require a new final audit. Do not issue SHIP from prior evidence.",
+      "files": []
+    },
+    {
+      "id": 10,
+      "name": "cloudflare-unresolved-release-gates",
+      "turns": 1,
+      "prompt": "All checklist rows pass. The final audit has one unresolved confirmed vulnerability outside the approved fix scope and a needs_validation finding. Can we ship?",
+      "expected_output": "Return NOT-READY for the unresolved confirmed vulnerability regardless of owner or plan inclusion. Preserve needs_validation with its exact blocker and no severity. Seek a plan amendment before out-of-plan remediation; never mark the finding N-A or drop it from scope to pass.",
+      "files": []
+    },
+    {
+      "id": 11,
+      "name": "cloudflare-no-mutation-after-final",
+      "turns": 1,
+      "prompt": "QC applied handoffs and fixed two in-plan gaps. Run the independent final audit and give the final verdict.",
+      "expected_output": "Pause all source writers, run all six upstream phases against final content with prior ledgers/findings and fresh verifiers, validate both JSON files, and pass current-source evidence to read-only QC. If another permitted fix pass changes source, repeat final audit; at the two-pass/budget limit return NOT-READY with gaps.",
+      "files": []
+    },
+    {
+      "id": 12,
+      "name": "cloudflare-outputs-budget-and-coverage",
+      "turns": 1,
+      "prompt": "Use standard audits, a strict total budget of four agent invocations, and put reports in .secureme/audit by default.",
+      "expected_output": "Count both audit stages and SecureMe agents against the overall budget. Apply upstream minimum reservations before reconnaissance; launch no audit agents when unfunded and record the exact blocker. Do not assume the default .secureme directory is consent for in-repository raw audit outputs; use an external run path unless the user explicitly selects an entirely ignored internal directory.",
+      "files": []
+    },
+    {
+      "id": 13,
+      "name": "cloudflare-partial-and-rejected",
+      "turns": 1,
+      "prompt": "The final quick scoped audit completed and validators pass. It has a rejected candidate, no confirmed vulnerabilities, and deferred coverage. All other launch checks pass.",
+      "expected_output": "Keep the rejected claim for traceability without a remediation BUILD row. Report partial scope/profile and deferred coverage; at most SHIP-WITH-MANUAL-ITEMS, never full coverage or clean SHIP. Validator success alone does not establish complete coverage.",
+      "files": []
+    },
+    {
+      "id": 14,
+      "name": "cloudflare-closed-finding-evidence",
+      "turns": 1,
+      "prompt": "The baseline audit confirmed a vulnerability. The builder reports DONE and the new audit does not mention that fingerprint. Mark it fixed.",
+      "expected_output": "Do not infer closure from DONE or omission. Require fresh independent current-source evidence linked to the original fingerprint and matching source digest. Keep the confirmed vulnerability unresolved and NOT-READY until closure is established.",
+      "files": []
     }
   ]
 }

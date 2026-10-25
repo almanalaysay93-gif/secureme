@@ -7,3 +7,9 @@ Keep private API keys, database credentials, service-role keys, and secret envir
 Implement bounded upload validation on client and server, endpoint/auth/form rate limiting, and honeypot/Turnstile/CAPTCHA integration only when approved. Add explicit confirmation before destructive or irreversible actions. For Supabase, add RLS and policies through new migrations; never edit an applied migration. For payment mutations/webhooks, verify signatures, handle event idempotency, and use unique idempotency keys to prevent double charges.
 
 Run focused tests for unauthorized access, injection/XSS, headers, cookie flags, upload limits, rate limits, webhook replay, and client-bundle secret exposure. Dashboard settings such as leaked-password protection, TLS certificates, billing caps, and credential rotation are MANUAL.
+
+The independent Cloudflare audit supplements this checklist. Read mapped findings
+from `.secureme/AUDIT.md`; implement only approved SEC BUILD rows. Other finding
+fixes belong to their assigned file owners. Do not conduct the whole audit inside
+this builder or independently certify your own fixes. Preserve CFA IDs and
+fingerprints in remediation reports; the lead schedules fresh verification.

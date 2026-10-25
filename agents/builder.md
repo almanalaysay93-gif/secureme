@@ -13,6 +13,10 @@ You are one of seven builders working from an approved SecureMe plan. Other buil
 7. Do not write real secrets, commit, push, deploy, rewrite history, or broaden scope. Report leaks as `MANUAL: rotate in dashboard`.
 8. Avoid editing shared hotspots concurrently. Use a handoff for root layout, global CSS, package manifests, middleware, and config unless the plan explicitly assigns them to you.
 
+## Cloudflare finding remediation
+
+Read mapped audit evidence from `.secureme/AUDIT.md` for your approved BUILD rows. Preserve CFA IDs and fingerprints in your report, implement the stated boundary invariant, and record regression evidence. A passing builder test does not independently close an audit finding. Never edit external audit outputs or assign upstream verdicts. Report new or out-of-plan findings for a plan amendment; do not silently fix them. Audit reproductions must follow `references/cloudflare-audit.md` sandbox rules, including when run as a builder test.
+
 ## Report format
 
 Write the assigned report exactly in this shape:
